@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ujieres · Iglesia Cristiana de Villa Hermosa</title>
+  <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; }
+:root {
+  --cr: #8B1A1A; --cr-light: #c0392b; --cr-dark: #5a0f0f; --cr-pale: #fdf0f0;
+  --gold: #c9a227; --white: #fff;
+  --text: #1a1a1a; --text2: #666;
+  --bg: #ffffff; --bg2: #f5f5f5;
+  --border: #e0e0e0;
+  --border-radius-lg: 12px; --border-radius-md: 8px;
+  --font-sans: system-ui, sans-serif;
+  --color-text-primary: #1a1a1a; --color-text-secondary: #666;
+  --color-background-primary: #ffffff; --color-background-secondary: #f5f5f5;
+  --color-border-tertiary: #e0e0e0;
+}
+.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.header { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: var(--cr-dark); border-radius: var(--border-radius-lg); margin-bottom: 16px; border-bottom: 3px solid var(--gold); }
+.header-logo { width: 54px; height: 54px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; border: 2px solid var(--gold); }
+.header-title { color: var(--white); flex: 1; }
+.header-title h1 { font-size: 18px; font-weight: 500; letter-spacing: 0.5px; }
+.header-title p { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+.header-upload { flex-shrink: 0; }
+.nav { display: flex; gap: 4px; background: var(--bg2); border-radius: var(--border-radius-lg); padding: 6px; margin-bottom: 16px; border: 0.5px solid var(--border); flex-wrap: wrap; }
+.nav-btn { flex: 1; min-width: 120px; padding: 9px 14px; border-radius: var(--border-radius-md); border: none; background: transparent; cursor: pointer; font-size: 13px; color: var(--text2); transition: all 0.15s; font-family: inherit; font-weight: 400; }
+.nav-btn.active { background: var(--cr); color: white; font-weight: 500; }
+.nav-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+.panel { display: none; }
+.panel.active { display: block; }
+.card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 16px; margin-bottom: 12px; }
+.card-title { font-size: 13px; font-weight: 500; color: var(--cr); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+.search-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.search-row input, .search-row select { flex: 1; min-width: 160px; padding: 8px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--border); background: var(--bg2); font-size: 13px; color: var(--text); font-family: inherit; }
+.search-row input:focus, .search-row select:focus { outline: none; border-color: var(--cr); box-shadow: 0 0 0 2px rgba(139,26,26,0.1); }
+.btn { padding: 8px 16px; border-radius: var(--border-radius-md); border: none; cursor: pointer; font-size: 13px; font-family: inherit; transition: all 0.15s; }
+.btn-primary { background: var(--cr); color: white; }
+.btn-primary:hover { background: var(--cr-light); }
+.btn-secondary { background: var(--bg2); color: var(--text); border: 0.5px solid var(--border); }
+.btn-secondary:hover { background: var(--bg); }
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { opacity: 0.9; }
+.btn-upload { background: #2e7d32; color: white; font-size: 13px; padding: 8px 14px; border-radius: var(--border-radius-md); border: none; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+.btn-upload:hover { background: #1b5e20; }
+.month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.month-nav h2 { font-size: 16px; font-weight: 500; color: var(--text); }
+.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dow-label { text-align: center; font-size: 11px; font-weight: 500; color: var(--cr); padding: 4px 0; letter-spacing: 0.3px; }
+.day-cell { border: 0.5px solid var(--border); border-radius: var(--border-radius-md); min-height: 72px; padding: 5px; background: var(--bg); cursor: pointer; transition: border-color 0.1s; }
+.day-cell:hover { border-color: var(--cr); }
+.day-cell.empty { background: var(--bg2); border-color: transparent; cursor: default; }
+.day-cell.today { border-color: var(--gold); border-width: 1.5px; }
+.day-cell.has-service { background: var(--cr-pale); }
+.day-num { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center; }
+.day-num .service-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cr); }
+.service-chip { font-size: 9px; padding: 2px 4px; border-radius: 4px; background: var(--cr); color: white; margin: 1px 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.service-chip.cafe { background: var(--gold); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 8px 10px; font-weight: 500; font-size: 12px; color: var(--cr); border-bottom: 1.5px solid var(--cr); background: var(--cr-pale); }
+td { padding: 7px 10px; border-bottom: 0.5px solid var(--border); color: var(--text); }
+tr:hover td { background: var(--bg2); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.badge-service { background: rgba(139,26,26,0.12); color: var(--cr); }
+.person-card { display: flex; align-items: center; gap: 12px; padding: 10px; border: 0.5px solid var(--border); border-radius: var(--border-radius-md); background: var(--bg); margin-bottom: 8px; cursor: pointer; transition: border-color 0.1s; }
+.person-card:hover { border-color: var(--cr); }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--cr); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.avatar.lider { background: var(--gold); }
+.person-info h3 { font-size: 13px; font-weight: 500; color: var(--text); }
+.person-skills { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.skill-tag { font-size: 10px; padding: 2px 6px; border-radius: 10px; background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 10px; margin-bottom: 14px; }
+.stat-card { background: var(--bg2); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
+.stat-num { font-size: 24px; font-weight: 500; color: var(--cr); }
+.stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.no-results { text-align: center; padding: 32px; color: var(--text2); font-size: 14px; }
+.form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.form-group { flex: 1; min-width: 150px; }
+.form-group label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 4px; }
+.form-group input, .form-group select { width: 100%; padding: 7px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--border); background: var(--bg2); font-size: 13px; color: var(--text); font-family: inherit; }
+.success-msg { color: #2e7d32; font-size: 12px; padding: 6px 10px; background: rgba(46,125,50,0.1); border-radius: var(--border-radius-md); }
+.upload-banner { display: none; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(46,125,50,0.08); border: 0.5px solid rgba(46,125,50,0.3); border-radius: var(--border-radius-md); margin-bottom: 12px; font-size: 13px; color: #2e7d32; }
+.upload-banner.show { display: flex; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="header-logo">✝</div>
+    <div class="header-title">
+      <h1>Iglesia Cristiana de Villa Hermosa</h1>
+      <p>Sistema de Programación de Ujieres · El Pacto</p>
+    </div>
+    <div class="header-upload">
+      <label class="btn-upload" title="Cargar disponibilidad mensual (.xlsx)">
+        &#8593; Cargar disponibilidad
+        <input type="file" accept=".xlsx,.xls" style="display:none" onchange="loadAvailability(this)" />
+      </label>
+    </div>
+  </div>
+
+  <div id="upload-banner" class="upload-banner">
+    <span>&#10003;</span>
+    <span id="upload-msg">Disponibilidad cargada correctamente.</span>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showPanel('calendario',this)">Programación Mensual</button>
+    <button class="nav-btn" onclick="showPanel('persona',this)">Buscar por Persona</button>
+    <button class="nav-btn" onclick="showPanel('servicio',this)">Buscar por Servicio</button>
+    <button class="nav-btn" onclick="showPanel('dia',this)">Buscar por Día</button>
+    <button class="nav-btn" onclick="showPanel('ujieres',this)">Ujieres</button>
+    <button class="nav-btn" onclick="showPanel('editar',this)">Editar Programación</button>
+  </div>
+
+  <div id="panel-calendario" class="panel active">
+    <div class="card">
+      <div class="month-nav">
+        <button class="btn btn-secondary" onclick="changeMonth(-1)">← Anterior</button>
+        <h2 id="month-title">Abril 2026</h2>
+        <button class="btn btn-secondary" onclick="changeMonth(1)">Siguiente →</button>
+      </div>
+      <div id="month-grid-container"></div>
+    </div>
+    <div class="card" id="day-detail" style="display:none">
+      <div class="card-title" id="day-detail-title">Servicios del día</div>
+      <div id="day-detail-content"></div>
+    </div>
+    <div style="text-align:right; margin-top: 8px;">
+      <button class="btn btn-gold" onclick="exportExcel()">Exportar a Excel</button>
+    </div>
+  </div>
+
+  <div id="panel-persona" class="panel">
+    <div class="card">
+      <div class="card-title">Buscar por Persona</div>
+      <div class="search-row" style="margin-bottom:12px">
+        <input type="text" id="search-persona" placeholder="Escribe un nombre..." oninput="filterPersonas(this.value)" />
+      </div>
+      <div id="personas-list"></div>
+    </div>
+    <div class="card" id="persona-detail" style="display:none">
+      <div class="card-title" id="persona-detail-name"></div>
+      <div id="persona-skills-row" style="margin-bottom:12px"></div>
+      <div id="persona-schedule"></div>
+    </div>
+  </div>
+
+  <div id="panel-servicio" class="panel">
+    <div class="card">
+      <div class="card-title">Buscar por Servicio</div>
+      <div class="search-row" style="margin-bottom:12px">
+        <select id="select-servicio" onchange="filterServicio()">
+          <option value="">Selecciona un servicio...</option>
+        </select>
+        <select id="select-dia-serv" onchange="filterServicio()">
+          <option value="">Todos los días</option>
+        </select>
+      </div>
+      <div id="servicio-results"></div>
+    </div>
+  </div>
+
+  <div id="panel-dia" class="panel">
+    <div class="card">
+      <div class="card-title">Buscar por Día</div>
+      <div class="search-row" style="margin-bottom:12px">
+        <input type="date" id="search-dia" onchange="filterDia(this.value)" style="flex:0 0 auto; width:180px;" />
+        <select id="select-dia-tipo" onchange="filterDia()">
+          <option value="">Todos los tipos de servicio</option>
+          <option value="Domingo">Domingo</option>
+          <option value="Lunes">Lunes</option>
+          <option value="Martes">Martes</option>
+          <option value="Miercoles">Miércoles</option>
+          <option value="Jueves AM">Jueves AM</option>
+          <option value="Jueves PM">Jueves PM</option>
+          <option value="Viernes">Viernes</option>
+          <option value="Sabado AM">Sábado AM</option>
+          <option value="Sabado PM">Sábado PM</option>
+        </select>
+      </div>
+      <div id="dia-results"></div>
+    </div>
+  </div>
+
+  <div id="panel-ujieres" class="panel">
+    <div class="card">
+      <div class="card-title">Lista de Ujieres (43)</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="stat-total">43</div><div class="stat-label">Total ujieres</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-lideres">0</div><div class="stat-label">Líderes</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-bienvenida">0</div><div class="stat-label">Bienvenida</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-diezmos">0</div><div class="stat-label">Diezmos</div></div>
+      </div>
+      <div class="search-row" style="margin-bottom:12px">
+        <input type="text" id="search-ujier" placeholder="Filtrar por nombre..." oninput="filterUjieres()" />
+        <select id="filter-skill" onchange="filterUjieres()">
+          <option value="">Todos los roles</option>
+          <option value="bienvenida">Bienvenida</option>
+          <option value="diezmos">Diezmos</option>
+          <option value="anuncios">Anuncios</option>
+          <option value="lider">Líder</option>
+          <option value="aromatica">Aromática</option>
+          <option value="cafe">Café</option>
+        </select>
+      </div>
+      <div id="ujieres-list"></div>
+    </div>
+  </div>
+
+  <div id="panel-editar" class="panel">
+    <div class="card">
+      <div class="card-title">Editar Programación</div>
+      <p style="font-size:13px; color:var(--text2); margin-bottom:12px;">Modifica manualmente la asignación de un ujier a un servicio en una fecha específica.</p>
+      <div class="form-row">
+        <div class="form-group"><label>Fecha</label><input type="date" id="edit-fecha" value="2026-04-05" /></div>
+        <div class="form-group"><label>Día tipo de servicio</label>
+          <select id="edit-dia-tipo">
+            <option>Domingo</option><option>Lunes</option><option>Martes</option>
+            <option>Miercoles</option><option>Jueves AM</option><option>Jueves PM</option>
+            <option>Viernes</option><option>Sabado AM</option><option>Sabado PM</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Servicio</label><select id="edit-servicio-tipo"></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Ujier asignado</label><select id="edit-ujier"></select></div>
+        <div class="form-group" style="display:flex; align-items:flex-end; gap:8px;">
+          <button class="btn btn-primary" onclick="saveEdit()">Guardar cambio</button>
+          <button class="btn btn-secondary" onclick="clearEdit()">Limpiar</button>
+        </div>
+      </div>
+      <div id="edit-msg" style="margin-top:8px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Programación guardada manualmente</div>
+      <div id="manual-list"><div class="no-results"><p>Aún no hay ediciones manuales</p></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
